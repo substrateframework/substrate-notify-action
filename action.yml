@@ -1,0 +1,19 @@
+name: 'Substrate Notification'
+description: 'Notify Substrate when a workflow completes'
+author: 'Substrate Framework'
+
+inputs:
+  api-url:
+    description: 'Substrate webhook API URL (e.g., https://api.substrate.dev/webhooks/github/workflow-complete)'
+    required: true
+  secret:
+    description: 'Shared HMAC secret for signing requests'
+    required: true
+
+runs:
+  using: 'node24'
+  main: 'dist/index.js'
+
+branding:
+  icon: 'check-circle'
+  color: 'blue'

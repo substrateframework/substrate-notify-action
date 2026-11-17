@@ -1,0 +1,29 @@
+name: Example Usage
+
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types: [completed]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      # Example: Using the action to notify Substrate
+      # In production, configure SUBSTRATE_API_URL and SUBSTRATE_WEBHOOK_SECRET as repository secrets
+
+      - name: Notify Substrate (Example)
+        run: |
+          echo "In production, this would use:"
+          echo "  uses: substrateframework/substrate-notify-action@v1"
+          echo "  with:"
+          echo "    api-url: \${{ secrets.SUBSTRATE_API_URL }}"
+          echo "    secret: \${{ secrets.SUBSTRATE_WEBHOOK_SECRET }}"
+          echo ""
+          echo "Workflow run details:"
+          echo "  Repository: \${{ github.event.repository.html_url }}"
+          echo "  Commit SHA: \${{ github.event.workflow_run.head_sha }}"
+          echo "  Branch: \${{ github.event.workflow_run.head_branch }}"
+          echo "  Conclusion: \${{ github.event.workflow_run.conclusion }}"
+          echo "  Run ID: \${{ github.event.workflow_run.id }}"
+          echo "  Run URL: \${{ github.event.workflow_run.html_url }}"
