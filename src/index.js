@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const crypto = require('crypto');
+const https = require('https');
 
 async function run() {
   try {
@@ -122,6 +123,9 @@ async function sendNotification(apiUrl, secret, payload, attempt = 1) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000);
 
+    // Create HTTPS agent that accepts self-signed certificates (for MVP with self-signed certs)
+    const agent = new https.Agent({ rejectUnauthorized: false });
+
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -131,7 +135,8 @@ async function sendNotification(apiUrl, secret, payload, attempt = 1) {
       },
       body: body,
       signal: controller.signal,
-      redirect: 'error'  // Reject redirects - don't forward signed request
+      redirect: 'error',  // Reject redirects - don't forward signed request
+      agent: agent  // Accept self-signed certificates
     }).finally(() => clearTimeout(timeoutId));
 
     // Success cases

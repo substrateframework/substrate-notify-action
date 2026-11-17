@@ -54005,6 +54005,7 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(7484);
 const github = __nccwpck_require__(3228);
 const crypto = __nccwpck_require__(6982);
+const https = __nccwpck_require__(5692);
 
 async function run() {
   try {
@@ -54126,6 +54127,9 @@ async function sendNotification(apiUrl, secret, payload, attempt = 1) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000);
 
+    // Create HTTPS agent that accepts self-signed certificates (for MVP with self-signed certs)
+    const agent = new https.Agent({ rejectUnauthorized: false });
+
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -54135,7 +54139,8 @@ async function sendNotification(apiUrl, secret, payload, attempt = 1) {
       },
       body: body,
       signal: controller.signal,
-      redirect: 'error'  // Reject redirects - don't forward signed request
+      redirect: 'error',  // Reject redirects - don't forward signed request
+      agent: agent  // Accept self-signed certificates
     }).finally(() => clearTimeout(timeoutId));
 
     // Success cases
